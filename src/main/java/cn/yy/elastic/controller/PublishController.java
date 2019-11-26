@@ -29,11 +29,27 @@ public class PublishController {
     }
 
     @PostMapping("/publish")
-    public String doPublish(@RequestParam("title") String title,
-                            @RequestParam("descriotion") String descriotion,
-                            @RequestParam("tag") String tag,
+    public String doPublish(@RequestParam(value = "title",required = false) String title,
+                            @RequestParam(value = "descriotion",required = false) String descriotion,
+                            @RequestParam(value = "tag",required = false) String tag,
                             HttpServletRequest request,
                             Model model){
+        model.addAttribute("title",title);
+        model.addAttribute("descriotion",descriotion);
+        model.addAttribute("tag",tag);
+
+        if (title == null || title == ""){
+            model.addAttribute("error","标题不能为空");
+            return "publish";
+        }
+        if (descriotion == null || descriotion == ""){
+            model.addAttribute("error","问题补充不能为空");
+            return "publish";
+        }
+        if (tag == null || tag == ""){
+            model.addAttribute("error","标签不能为空");
+            return "publish";
+        }
         User user = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
