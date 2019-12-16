@@ -1,1 +1,1 @@
-alter table comment add content varchar(1024) null;
+alter table COMMENT add comment_count int default 0;

@@ -1,4 +1,11 @@
-package cn.yy.elastic.controller;
+package cn.yy.elastic.dto;
 
+import lombok.Data;
+
+import java.util.List;
+
+@Data
 public class TagDTO {
+    private String categoryName;
+    private List<String> tags;
 }

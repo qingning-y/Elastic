@@ -1,43 +1,36 @@
 package cn.yy.elastic.controller;
 
+import cn.yy.elastic.dto.PaginationDTO;
+import cn.yy.elastic.dto.QuestionDTO;
+import cn.yy.elastic.mapper.QuestionMapper;
 import cn.yy.elastic.mapper.UserMapper;
+import cn.yy.elastic.model.Question;
 import cn.yy.elastic.model.User;
+import cn.yy.elastic.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class IndexController {
 
     @Autowired
-    private UserMapper userMapper;
+    private QuestionService questionService;
 
     @GetMapping("/")
-    public String index(HttpServletRequest request) {
-        /**
-         * request:可以获取Cookies
-         * response:返回浏览器，设置Cookies
-         */
-        /**
-         * 访问首页的时候，循环看所有的Cookies,找到Cookies等于token,拿到Cookies，就去数据库里面查询是否有这个Cookies记录
-         * 如果有就把user返回到session里面
-         */
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-        }
+    public String index(Model model,
+                        @RequestParam(name = "page", defaultValue = "1") Integer page,
+                        @RequestParam(name = "size", defaultValue = "5") Integer size,
+                        @RequestParam(name = "search", required = false) String  search) {
+        PaginationDTO pagination = questionService.list(page, size,search);
+        model.addAttribute("pagination", pagination);
+        model.addAttribute("search",search);
         return "index";
     }
 }

@@ -1,2 +1,1 @@
-    alter table USER
-    add avatar_url varchar(100);
+alter table comment add content varchar(1024) null;
